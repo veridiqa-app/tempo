@@ -875,7 +875,7 @@ async function sbDoLogin(){
   document.getElementById('sbBtn').textContent="Signing in…";
   var r=await c.auth.signInWithPassword({email:_v('sbEmail'),password:_v('sbPass')});
   if(r.error){document.getElementById('sbErr').textContent=r.error.message;document.getElementById('sbBtn').textContent="Sign in";return;}
-  try{await c.from('audit_log').insert({action:'login'});}catch(e){}
+  try{var _u=r.data&&r.data.user;var _mm=await c.from('memberships').select('tenant_id').limit(1);var _tt=(_mm.data&&_mm.data[0]&&_mm.data[0].tenant_id)||null;await c.from('audit_log').insert({action:'login',user_id:_u&&_u.id,tenant_id:_tt});}catch(e){}
   await sbLoadAndEnter();
 }
 async function sbLoadAndEnter(){
